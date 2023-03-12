@@ -34,5 +34,4 @@ def get_holidays_by_date(date: datetime.date) -> str:
 
 
 def _date_to_repr(date: datetime.date) -> str:
-    datetime.date(2)
     return f"{date.day} {MONTH_NAMES[date.month]}"

@@ -1,5 +1,6 @@
 import os
 import random
+import textwrap
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -16,6 +17,24 @@ def get_random_background() -> Image.Image:
     return Image.open(os.path.join(IMAGE_DIRECTORY, random.choice(images)))
 
 
+def get_random_greeting() -> str:
+    return random.choice(["Щастя і здоров'я!", "Бажаю успіхів!", "Нехай щастить!"])
+
+
+def generate_postcard_with_holiday() -> Image.Image:
+    text = f"{get_todays_holidays()}. {get_random_greeting()}"
+    return generate_postcard(text)
+
+
+# def with_paddings(text: str) -> str:
+#     count = 0
+#     while count < len(text):
+#         if count and count % 15 == 0:
+#             text = text[:count] + "/n" + text[count:]
+#         count += 1
+#     return text
+
+
 def generate_postcard(text: str) -> Image.Image:
     img = get_random_background()
 
@@ -23,9 +42,20 @@ def generate_postcard(text: str) -> Image.Image:
     # Call draw Method to add 2D graphics in an image
     textPromp = ImageDraw.Draw(img)
 
-    myFont = ImageFont.truetype(os.path.join(ROOT_DIR, "font.ttf"), 200)
+    font = ImageFont.truetype(os.path.join(ROOT_DIR, "font.ttf"), 60)
 
-    textPromp.text((width / 2, height / 2), text, fill=(255, 0, 0), font=myFont)
+    margin = 400
+    offset = height / 5
+    for line in textwrap.wrap(text, width=15):
+        textPromp.text(
+            (margin, offset),
+            line,
+            font=font,
+            fill="#aa0000",
+            stroke_fill=(0, 0, 0),
+            stroke_width=2,
+        )
+        offset += font.getsize(line)[1]
 
     # Save the edited image
     img.save("test.png")
